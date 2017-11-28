@@ -49,33 +49,56 @@ int main(){
         for (int j = 0 ; j < taille ; j++){
             cpt = 0 ;
             if (tabValeurs[i][j]!=9){
+                //ligne 0
+                if (i==0){
+                    if(j == 0){
+                        if (tabValeurs[0][1]==9){
+                            cpt ++;
+                        }
+                        if (tabValeurs[1][0]==9){
+                            cpt ++;
+                        }
+                        if (tabValeurs[1][1]==9){
+                            cpt ++;
+                        }
+                        tabValeurs[0][0] = cpt ;
+                    }
+                    else{
+                        if(j == 4){
+                            if (tabValeurs[0][3]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[1][3]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[1][4]==9){
+                                cpt ++;
+                            }
+                            tabValeurs[0][4] = cpt ;
+                        }
+                        else{
+                            if (tabValeurs[i][j-1]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[i][j+1]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[i+1][j-1]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[i+1][j]==9){
+                                cpt ++;
+                            }
+                            if (tabValeurs[i+1][j+1]==9){
+                                cpt ++;
+                            }
+                            tabValeurs[i][j]= cpt ;
+                        }
+                    }
 
+                }
 
-                //Cas particulier des coins
-                if(i == 0 && j == 0){
-                    if (tabValeurs[0][1]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[1][0]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[1][1]==9){
-                        cpt ++;
-                    }
-                    tabValeurs[0][0] = cpt ;
-                }
-                if(i == 0 && j == 4){
-                    if (tabValeurs[0][3]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[1][3]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[1][4]==9){
-                        cpt ++;
-                    }
-                    tabValeurs[0][4] = cpt ;
-                }
+                //ligne 4
                 if(i == 4 && j == 0){
                     if (tabValeurs[3][0]==9){
                         cpt ++;
@@ -100,10 +123,10 @@ int main(){
                     }
                     tabValeurs[4][4] = cpt ;
                 }
+                //colonne 0
+
+                //colonne 4
             }
-
-
-
         }
     }
 
