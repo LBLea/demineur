@@ -3,107 +3,77 @@
 #include <time.h>
 
 
- 
+
 int main(){
+    //Initialisation des valeurs
+    int taille = 5, nb_mines = 5, case_decouverte = 0, perdu = 0 ;
+    int ligne = 0, colonne = 0 ;
+    int tabAffichage [taille][taille], tabValeurs[taille][taille];
 
-    int tableau[10], niveau, ok = 0 , nb_secret ;
-    int nb_erreurs = 0, nb_sachet_bon = 0, perdu = 0, choix ;
+    // Fonctions
 
-    // Initialisation du tableau
-    for (int i=0; i<10 ;i++){
-        tableau[i] = 0 ;
-    }
-
-    // Choix du niveau
-    while (ok == 0){
-        printf("Choisir un niveau :\n easy   -> 0 \n medium -> 1 \n master -> 2 \n");
-        scanf("%d", &niveau);
-        if (niveau <3 && niveau >=0){
-            ok = 1;
+    //fonction Affichage
+    void affichage(int tab[5][5]){
+        for (int i = 0 ; i < taille ; i++){
+            for(int j = 0 ; j < taille ; j++){
+                printf("%d",tab[i][j]);
+            }
+            printf("\n");
         }
     }
 
+    // Programme
 
+    // Initialisation des deux tableaux à zero
 
-    // Creation des erreurs
+    for (int i = 0 ; i<taille ; i++){
+        for (int j = 0 ; j<taille ; j++){
+            tabAffichage[i][j] = 0 ;
+            tabValeurs[i][j] = 0 ;
+        }
+    }
 
-    // Niveau Easy 1 erreur
+    // Mise en place des mines
+    // la mine aura la valeur 9
     srand(time(NULL));
 
-
-    if (niveau == 0){
-        nb_secret = rand()%9 ;
-        tableau[nb_secret] = 1 ;
-
+    for ( int k = 0 ; k <nb_mines ; k++){
+        tabValeurs[rand()%5][rand()%5] = 9 ;
     }
 
-    else{
-        // Nibeau Medium 2 erreurs
-        if (niveau == 1){
-            while(nb_erreurs<2){
-            nb_secret = rand()%9 ;
-                if (tableau[nb_secret]==0){
-                    nb_erreurs ++ ;
-                    tableau[nb_secret] = 1 ;
-                }
-            }
-        }
-
-        // Nibeau Master 3 erreurs
-        else{
-            while(nb_erreurs<3){
-            nb_secret = rand()%9 ;
-                if (tableau[nb_secret]==0){
-                    nb_erreurs ++ ;
-                    tableau[nb_secret] = 1 ;
-                }
-            }
-        }
-
-    }
-
-    printf("Vous avez choisi le niveau : %d\n", niveau);
-
-
-    while( perdu == 0 && nb_sachet_bon < 3){
-        // Etat du rayon
-        for(int j = 0 ; j<10 ; j++){
-            if (tableau[j]==-1){
-                printf("| ");
-            }
-            else{
-                printf("|■");
-            }
-            if (j==9){
-                printf("| \n");
-            }
-
-        }
-
-
-        printf("Veuillez choisir un paquet de gruyere entre 1 et 10\n\n");
-        scanf("%d",&choix);
-
-        if(choix < 11 && choix > 0){
-            if(tableau[choix-1]==1){
-                printf("BOOOOOOOM \n");
-                perdu = 1;
-            }
-            else{
-                if(tableau[choix-1]==0){
-                    tableau[choix-1]= -1;
-                    nb_sachet_bon ++ ;
-                    printf("OUFF... ! Vous avez %d sachet(s) bon\n",nb_sachet_bon);
-                }
-                else{
-                    printf("Vous avez deja fait ce choix\n");
-                }
-            }
-        }
-
-    }
+    affichage(tabValeurs);
 
 
 
-    return 0 ;
+    // // Jeu
+    // printf("%s\n", taille*taille - nb_mines);
+    //
+    // while ((case_decouverte < (taille*taille - nb_mines)) && perdu = 0){
+    //     printf("Entrez le numero de la ligne\n");
+    //     scanf("%s\n",ligne);
+    //     printf("Entrez le numero de la colonne\n");
+    //     scanf("%s\n",colonne);
+    //
+    //
+    //     if (tabValeurs[ligne,colonne] == 9){
+    //         perdu = 1 ;
+    //     }
+    //     else{
+    //         // Attention ne pas compter une case déjà affichée.
+    //         case_decouverte ++ ;
+    //         affichage(tabValeurs) ;
+    //     }
+    // }
+    //
+    //
+    //
+    // //Commentaire de fin
+    // if (case_decouverte == 1){
+    //     printf("Bravo !\n");
+    // }
+    // if (perdu == 1){
+    //     printf("BOOOOM ! Perdu !! \n");
+    // }
+
+    return 0;
 }
