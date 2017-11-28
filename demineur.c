@@ -7,7 +7,7 @@
 int main(){
     //Initialisation des valeurs
     int taille = 5, nb_mines = 5, case_decouverte = 0, perdu = 0 ;
-    int ligne = 0, colonne = 0 ;
+    int ligne = 0, colonne = 0, cpt = 0;
     int tabAffichage [taille][taille], tabValeurs[taille][taille];
 
     // Fonctions
@@ -39,6 +39,72 @@ int main(){
 
     for ( int k = 0 ; k <nb_mines ; k++){
         tabValeurs[rand()%5][rand()%5] = 9 ;
+    }
+
+    affichage(tabValeurs);
+    printf("________\n");
+
+    // Calcul du nombre de mines voisines
+    for(int i=0; i< taille ; i++){
+        for (int j = 0 ; j < taille ; j++){
+            cpt = 0 ;
+            if (tabValeurs[i][j]!=9){
+
+
+                //Cas particulier des coins
+                if(i == 0 && j == 0){
+                    if (tabValeurs[0][1]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[1][0]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[1][1]==9){
+                        cpt ++;
+                    }
+                    tabValeurs[0][0] = cpt ;
+                }
+                if(i == 0 && j == 4){
+                    if (tabValeurs[0][3]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[1][3]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[1][4]==9){
+                        cpt ++;
+                    }
+                    tabValeurs[0][4] = cpt ;
+                }
+                if(i == 4 && j == 0){
+                    if (tabValeurs[3][0]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[3][1]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[4][1]==9){
+                        cpt ++;
+                    }
+                    tabValeurs[4][0] = cpt ;
+                }
+                if(i == 4 && j == 4){
+                    if (tabValeurs[3][3]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[3][4]==9){
+                        cpt ++;
+                    }
+                    if (tabValeurs[4][3]==9){
+                        cpt ++;
+                    }
+                    tabValeurs[4][4] = cpt ;
+                }
+            }
+
+
+
+        }
     }
 
     affichage(tabValeurs);
