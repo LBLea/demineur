@@ -12,7 +12,10 @@ int main(){
 
     // Fonctions
 
-    //fonction Affichage
+    //fonction Affichage 
+    
+    //comment prof: definissez vos fonctions a l exterieur du main 
+    
     void affichage(int tab[5][5]){
         for (int i = 0 ; i < taille ; i++){
             for(int j = 0 ; j < taille ; j++){
@@ -45,6 +48,9 @@ int main(){
     printf("________\n");
 
     // Calcul du nombre de mines voisines
+    
+    // comment prof: il est possible de faire beaucoup plus propre a mon avis :) perso pour eviter de me prendre la tete je prefere utilisr un tableau avec une marge de 1 (une ligne au dessus, en dessous, a gauche et a droite)
+    
     for(int i=0; i< taille ; i++){
         for (int j = 0 ; j < taille ; j++){
             cpt = 0 ;
