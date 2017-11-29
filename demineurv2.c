@@ -7,13 +7,19 @@
 
 // Fonction Affichage
 void affichage(int tab[7][7], int taille){
+    system("clear");
     for (int i = 1 ; i < taille-1 ; i++){
         for(int j = 1 ; j < taille-1 ; j++){
             if (tab[i][j]==-1){
                 printf("□|");
             }
             else{
-                printf("%d|",tab[i][j]);
+                if (tab[i][j]==0){
+                    printf(" |");
+                }
+                else{
+                    printf("%d|",tab[i][j]);
+                }
             }
         }
         printf("\n______\n");
@@ -89,15 +95,16 @@ int main(){
     while (continuer == 1){
         //ligne = -1 ;
         //while (ligne < 0 || taille-2 < ligne){
-            printf("Entrez le numero de la colonne entre 1 et 5\n");
-            scanf("%d\n",&ligne);
+            printf("Entrez le numero de la ligne entre 1 et 5\n");
+            scanf("%d",&ligne);
         //}
         //colonne =-1;
         //while (0>colonne || colonne > taille-1){
-            printf("Entrez le numero de la ligne entre 1 et 5\n");
-            scanf("%d\n",&colonne);
+            printf("Entrez le numero de la colonne entre 1 et 5\n");
+            scanf("%d",&colonne);
         //}
 
+        printf("%d, %d\n",ligne, colonne );
         //Si je tombe sur une mine
         if (tabValeurs[ligne][colonne] == 9){
             continuer = 0 ;
@@ -112,10 +119,13 @@ int main(){
                 case_decouverte ++ ;
                 affichage(tabAffichage,taille) ;
 
-                if (case_decouverte == (taille-2)*2 - nb_mines){
+                if (case_decouverte == (taille-2)*(taille-2) - nb_mines){
                     printf("Bravo !\n");
                     continuer = 0 ;
                 }
+            }
+            else{
+                printf("Vous avez déjà joué cette case \n");
             }
         }
     }
