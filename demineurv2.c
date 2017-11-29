@@ -26,7 +26,6 @@ void affichage(int tab[7][7], int taille){
     }
 }
 
-
 int main(){
     //Initialisation des valeurs
     int taille = 7, nb_mines = 5, continuer = 1, case_decouverte = 0 ;
@@ -90,21 +89,20 @@ int main(){
 
     // Jeu
 
-    affichage(tabValeurs,taille);
+    //affichage(tabValeurs,taille);
 
     while (continuer == 1){
-        //ligne = -1 ;
-        //while (ligne < 0 || taille-2 < ligne){
+        ligne = -1 ;
+        while (ligne < 0 || taille-2 < ligne){
             printf("Entrez le numero de la ligne entre 1 et 5\n");
             scanf("%d",&ligne);
-        //}
-        //colonne =-1;
-        //while (0>colonne || colonne > taille-1){
+        }
+        colonne =-1;
+        while (0>colonne || colonne > taille-1){
             printf("Entrez le numero de la colonne entre 1 et 5\n");
             scanf("%d",&colonne);
-        //}
+        }
 
-        printf("%d, %d\n",ligne, colonne );
         //Si je tombe sur une mine
         if (tabValeurs[ligne][colonne] == 9){
             continuer = 0 ;
@@ -112,6 +110,7 @@ int main(){
             printf("Vous avez perdu\n");
             affichage(tabAffichage,taille) ;
         }
+
         //Si je ne tombe pas sur une mine
         else{
             if (tabAffichage[ligne][colonne] == -1 ){
@@ -129,11 +128,5 @@ int main(){
             }
         }
     }
-
-
-
-    //Commentaire de fin
-
-
     return 0;
 }
