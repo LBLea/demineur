@@ -3,24 +3,29 @@
 #include <time.h>
 
 
+// Fonctions
+
+// Fonction Affichage
+void affichage(int tab[7][7], int taille){
+    for (int i = 1 ; i < taille-1 ; i++){
+        for(int j = 1 ; j < taille-1 ; j++){
+            if (tab[i][j]==-1){
+                printf("□|");
+            }
+            else{
+                printf("%d|",tab[i][j]);
+            }
+        }
+        printf("\n______\n");
+    }
+}
+
 
 int main(){
     //Initialisation des valeurs
-    int taille = 5, nb_mines = 5, case_decouverte = 0, perdu = 0 ;
+    int taille = 7, nb_mines = 5, continuer = 1, case_decouverte = 0 ;
     int ligne = 0, colonne = 0, cpt = 0;
     int tabAffichage [taille][taille], tabValeurs[taille][taille];
-
-    // Fonctions
-
-    //fonction Affichage
-    void affichage(int tab[5][5]){
-        for (int i = 0 ; i < taille ; i++){
-            for(int j = 0 ; j < taille ; j++){
-                printf("%d",tab[i][j]);
-            }
-            printf("\n");
-        }
-    }
 
     // Programme
 
@@ -28,7 +33,7 @@ int main(){
 
     for (int i = 0 ; i<taille ; i++){
         for (int j = 0 ; j<taille ; j++){
-            tabAffichage[i][j] = 0 ;
+            tabAffichage[i][j] = -1 ;
             tabValeurs[i][j] = 0 ;
         }
     }
@@ -38,131 +43,87 @@ int main(){
     srand(time(NULL));
 
     for ( int k = 0 ; k <nb_mines ; k++){
-        tabValeurs[rand()%5][rand()%5] = 9 ;
+        tabValeurs[1+rand()%5][1+rand()%5] = 9 ;
     }
 
-    affichage(tabValeurs);
-    printf("________\n");
-
     // Calcul du nombre de mines voisines
-    for(int i=0; i< taille ; i++){
-        for (int j = 0 ; j < taille ; j++){
-            cpt = 0 ;
+    for (int i=1 ; i<(taille-1) ; i++){
+        for (int j=1 ; j<(taille-1) ; j++){
+            cpt = 0;
             if (tabValeurs[i][j]!=9){
-                //ligne 0
-                if (i==0){
-                    if(j == 0){
-                        if (tabValeurs[0][1]==9){
-                            cpt ++;
-                        }
-                        if (tabValeurs[1][0]==9){
-                            cpt ++;
-                        }
-                        if (tabValeurs[1][1]==9){
-                            cpt ++;
-                        }
-                        tabValeurs[0][0] = cpt ;
-                    }
-                    else{
-                        if(j == 4){
-                            if (tabValeurs[0][3]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[1][3]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[1][4]==9){
-                                cpt ++;
-                            }
-                            tabValeurs[0][4] = cpt ;
-                        }
-                        else{
-                            if (tabValeurs[i][j-1]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[i][j+1]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[i+1][j-1]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[i+1][j]==9){
-                                cpt ++;
-                            }
-                            if (tabValeurs[i+1][j+1]==9){
-                                cpt ++;
-                            }
-                            tabValeurs[i][j]= cpt ;
-                        }
-                    }
-
+                if (tabValeurs[i-1][j-1]==9){
+                    cpt++;
                 }
-
-                //ligne 4
-                if(i == 4 && j == 0){
-                    if (tabValeurs[3][0]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[3][1]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[4][1]==9){
-                        cpt ++;
-                    }
-                    tabValeurs[4][0] = cpt ;
+                if (tabValeurs[i-1][j]==9){
+                    cpt++;
                 }
-                if(i == 4 && j == 4){
-                    if (tabValeurs[3][3]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[3][4]==9){
-                        cpt ++;
-                    }
-                    if (tabValeurs[4][3]==9){
-                        cpt ++;
-                    }
-                    tabValeurs[4][4] = cpt ;
+                if (tabValeurs[i-1][j+1]==9){
+                    cpt++;
                 }
-                //colonne 0
-
-                //colonne 4
+                if (tabValeurs[i][j-1]==9){
+                    cpt++;
+                }
+                if (tabValeurs[i][j+1]==9){
+                    cpt++;
+                }
+                if (tabValeurs[i+1][j-1]==9){
+                    cpt++;
+                }
+                if (tabValeurs[i+1][j]==9){
+                    cpt++;
+                }
+                if (tabValeurs[i+1][j+1]==9){
+                    cpt++;
+                }
+                tabValeurs[i][j] = cpt ;
             }
         }
     }
 
-    affichage(tabValeurs);
+
+
+    // Jeu
+
+    affichage(tabValeurs,taille);
+
+    while (continuer == 1){
+        //ligne = -1 ;
+        //while (ligne < 0 || taille-2 < ligne){
+            printf("Entrez le numero de la colonne entre 1 et 5\n");
+            scanf("%d\n",&ligne);
+        //}
+        //colonne =-1;
+        //while (0>colonne || colonne > taille-1){
+            printf("Entrez le numero de la ligne entre 1 et 5\n");
+            scanf("%d\n",&colonne);
+        //}
+
+        //Si je tombe sur une mine
+        if (tabValeurs[ligne][colonne] == 9){
+            continuer = 0 ;
+            tabAffichage[ligne][colonne] = 9 ;
+            printf("Vous avez perdu\n");
+            affichage(tabAffichage,taille) ;
+        }
+        //Si je ne tombe pas sur une mine
+        else{
+            if (tabAffichage[ligne][colonne] == -1 ){
+                tabAffichage[ligne][colonne] = tabValeurs[ligne][colonne] ;
+                case_decouverte ++ ;
+                affichage(tabAffichage,taille) ;
+
+                if (case_decouverte == (taille-2)*2 - nb_mines){
+                    printf("Bravo !\n");
+                    continuer = 0 ;
+                }
+            }
+        }
+    }
 
 
 
-    // // Jeu
-    // printf("%s\n", taille*taille - nb_mines);
-    //
-    // while ((case_decouverte < (taille*taille - nb_mines)) && perdu = 0){
-    //     printf("Entrez le numero de la ligne\n");
-    //     scanf("%s\n",ligne);
-    //     printf("Entrez le numero de la colonne\n");
-    //     scanf("%s\n",colonne);
-    //
-    //
-    //     if (tabValeurs[ligne,colonne] == 9){
-    //         perdu = 1 ;
-    //     }
-    //     else{
-    //         // Attention ne pas compter une case déjà affichée.
-    //         case_decouverte ++ ;
-    //         affichage(tabValeurs) ;
-    //     }
-    // }
-    //
-    //
-    //
-    // //Commentaire de fin
-    // if (case_decouverte == 1){
-    //     printf("Bravo !\n");
-    // }
-    // if (perdu == 1){
-    //     printf("BOOOOM ! Perdu !! \n");
-    // }
+    //Commentaire de fin
+
 
     return 0;
 }
