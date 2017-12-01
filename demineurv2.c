@@ -1,13 +1,15 @@
+//#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-
+static int cpt = 0 ;
 // Fonctions
 
 // Fonction Affichage
+
 void affichage(int tab[7][7], int taille){
-    system("clear");
+    //system("clear");
     for (int i = 1 ; i < taille-1 ; i++){
         for(int j = 1 ; j < taille-1 ; j++){
             if (tab[i][j]==-1){
@@ -25,6 +27,62 @@ void affichage(int tab[7][7], int taille){
         printf("\n______\n");
     }
 }
+
+void case_voisine2(int tab[7][7], int tab2[7][7], int taille, int lig, int col){
+    tab[lig-1][col-1] = tab2[lig-1][col-1] ;
+    tab[lig-1][col] = tab2[lig-1][col] ;
+    tab[lig-1][col+1] = tab2[lig-1][col+1] ;
+
+    tab[lig][col-1] = tab2[lig][col-1] ;
+    tab[lig][col+1] = tab2[lig][col+1] ;
+
+    tab[lig+1][col-1] = tab2[lig+1][col-1] ;
+    tab[lig+1][col] = tab2[lig+1][col] ;
+    tab[lig+1][col+1] = tab2[lig+1][col+1] ;
+}
+
+void case_voisine(int tab[7][7], int tab2[7][7], int taille, int lig, int col){
+    for (int i=1; i<taille-1 ; i++){
+        for (int j=1; j<taille-1 ; j++){
+            if (tab[lig][col] == 0){
+                case_voisine2(tab,tab2,taille,lig,col);
+                if (tab[lig-1][col-1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig-1,col-1);
+                }
+                if (tab[lig-1][col] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig-1,col);
+                }
+                if (tab[lig-1][col+1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig-1,col+1);
+                }
+                if (tab[lig][col-1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig,col-1);
+                }
+                if (tab[lig][col+1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig,col+1);
+                }
+                if (tab[lig+1][col-1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig+1,col-1);
+                }
+                if (tab[lig+1][col] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig+1,col);
+                }
+                if (tab[lig+1][col+1] == 0 && cpt<10){
+                    cpt++;
+                    case_voisine2(tab,tab2,taille,lig+1,col+1);
+                }
+            }
+        }
+    }
+}
+
 
 int main(){
     //Initialisation des valeurs
@@ -89,7 +147,7 @@ int main(){
 
     // Jeu
 
-    //affichage(tabValeurs,taille);
+    affichage(tabValeurs,taille);
 
     while (continuer == 1){
         ligne = -1 ;
@@ -107,8 +165,8 @@ int main(){
         if (tabValeurs[ligne][colonne] == 9){
             continuer = 0 ;
             tabAffichage[ligne][colonne] = 9 ;
-            printf("Vous avez perdu\n");
             affichage(tabAffichage,taille) ;
+            printf("Vous avez perdu\n");
         }
 
         //Si je ne tombe pas sur une mine
@@ -116,6 +174,8 @@ int main(){
             if (tabAffichage[ligne][colonne] == -1 ){
                 tabAffichage[ligne][colonne] = tabValeurs[ligne][colonne] ;
                 case_decouverte ++ ;
+                cpt =0;
+                case_voisine(tabAffichage,tabValeurs,taille,ligne,colonne);
                 affichage(tabAffichage,taille) ;
 
                 if (case_decouverte == (taille-2)*(taille-2) - nb_mines){
@@ -124,7 +184,7 @@ int main(){
                 }
             }
             else{
-                printf("Vous avez déjà joué cette case \n");
+                printf("Cette case est deja decouverte \n");
             }
         }
     }
