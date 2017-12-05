@@ -1,4 +1,4 @@
-//#include <windows.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -92,7 +92,7 @@ void affichage(int tab[7][7], int taille){
                 }
             }
         }
-        printf("\n______\n");
+        printf("\n_________\n");
     }
 }
 
@@ -176,19 +176,24 @@ int main(){
 
     //______________PROGRAMMATION__________________
 
+    //___Affichage du tableau vide
+    affichage(tabAffichage,taille);
+
+    //___Interaction avec l'utilisateur
     while (continuer == 1){
+        // Choix de l'emplacement
         ligne = -1 ;
         while (ligne < 0 || taille-2 < ligne){
             printf("Entrez le numero de la ligne entre 1 et 5\n");
             scanf("%d",&ligne);
         }
-        colonne =-1;
+        colonne = -1 ;
         while (0>colonne || colonne > taille-1){
             printf("Entrez le numero de la colonne entre 1 et 5\n");
             scanf("%d",&colonne);
         }
 
-        // Si je tombe sur une mine
+        //___Si je tombe sur une mine
         if (tabValeurs[ligne][colonne] == 9){
             continuer = 0 ;
             tabAffichage[ligne][colonne] = 9 ;
@@ -196,7 +201,7 @@ int main(){
             printf("Vous avez perdu\n");
         }
 
-        // Si je ne tombe pas sur une mine
+        //___Si je ne tombe pas sur une mine
         else{
             if (tabAffichage[ligne][colonne] == -1 ){
                 tabAffichage[ligne][colonne] = tabValeurs[ligne][colonne] ;
