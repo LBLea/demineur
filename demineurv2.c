@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-static int cpt = 0 ;
 // Fonctions
-
+static int cpt ;
 // Fonction Affichage
 
 void affichage(int tab[7][7], int taille){
@@ -40,44 +39,44 @@ void case_voisine2(int tab[7][7], int tab2[7][7], int taille, int lig, int col){
     tab[lig+1][col] = tab2[lig+1][col] ;
     tab[lig+1][col+1] = tab2[lig+1][col+1] ;
 }
+    static int tabstock[7][7] ;
 
-void case_voisine(int tab[7][7], int tab2[7][7], int taille, int lig, int col){
+
+void case_voisine(int tabaff[7][7], int tabval[7][7], int taille, int lig, int col){
     for (int i=1; i<taille-1 ; i++){
         for (int j=1; j<taille-1 ; j++){
-            if (tab[lig][col] == 0){
-                case_voisine2(tab,tab2,taille,lig,col);
-                if (tab[lig-1][col-1] == 0 && cpt<10){
+            if (tabaff[lig][col] == 0){
+                if (tabval[lig-1][col] == 0  && tabstock[lig-1][col] == -1){
                     cpt++;
-                    case_voisine2(tab,tab2,taille,lig-1,col-1);
+                    tabstock[lig-1][col]=0;
+                    //printf("ligne -1\n");
+                    case_voisine2(tabaff,tabval,taille,lig,col);
+                    case_voisine(tabaff,tabval,taille,lig-1,col);
+
                 }
-                if (tab[lig-1][col] == 0 && cpt<10){
+                if (tabval[lig][col-1] == 0 && tabstock[lig][col-1] == -1){
                     cpt++;
-                    case_voisine2(tab,tab2,taille,lig-1,col);
+                    tabstock[lig][col-1]=0;
+                    //printf("col -1");
+                    case_voisine2(tabaff,tabval,taille,lig,col);
+                    case_voisine(tabaff,tabval,taille,lig,col-1);
+
                 }
-                if (tab[lig-1][col+1] == 0 && cpt<10){
+                if (tabval[lig+1][col] == 0  && tabstock[lig+1][col] == -1){
                     cpt++;
-                    case_voisine2(tab,tab2,taille,lig-1,col+1);
+                    tabstock[lig+1][col]=0;
+                    //printf("ligne +1\n");
+                    case_voisine2(tabaff,tabval,taille,lig,col);
+                    case_voisine(tabaff,tabval,taille,lig+1,col);
                 }
-                if (tab[lig][col-1] == 0 && cpt<10){
+                if (tabval[lig][col+1] == 0  && tabstock[lig][col+1] == -1){
                     cpt++;
-                    case_voisine2(tab,tab2,taille,lig,col-1);
+                    tabstock[lig][col+1]=0;
+                    //printf("col +1\n");
+                    case_voisine2(tabaff,tabval,taille,lig,col);
+                    case_voisine(tabaff,tabval,taille,lig,col+1);
                 }
-                if (tab[lig][col+1] == 0 && cpt<10){
-                    cpt++;
-                    case_voisine2(tab,tab2,taille,lig,col+1);
-                }
-                if (tab[lig+1][col-1] == 0 && cpt<10){
-                    cpt++;
-                    case_voisine2(tab,tab2,taille,lig+1,col-1);
-                }
-                if (tab[lig+1][col] == 0 && cpt<10){
-                    cpt++;
-                    case_voisine2(tab,tab2,taille,lig+1,col);
-                }
-                if (tab[lig+1][col+1] == 0 && cpt<10){
-                    cpt++;
-                    case_voisine2(tab,tab2,taille,lig+1,col+1);
-                }
+                case_voisine2(tabaff,tabval,taille,lig,col);
             }
         }
     }
@@ -165,7 +164,7 @@ int main(){
         if (tabValeurs[ligne][colonne] == 9){
             continuer = 0 ;
             tabAffichage[ligne][colonne] = 9 ;
-            affichage(tabAffichage,taille) ;
+            affichage(tabValeurs,taille) ;
             printf("Vous avez perdu\n");
         }
 
@@ -174,7 +173,22 @@ int main(){
             if (tabAffichage[ligne][colonne] == -1 ){
                 tabAffichage[ligne][colonne] = tabValeurs[ligne][colonne] ;
                 case_decouverte ++ ;
-                cpt =0;
+                for (int i = 0 ; i<taille-1 ; i++){
+                    for (int j = 0 ; j<taille-1 ; j++){
+                         if (0<i && i<6){
+                            if (0<j && j<6){
+                                tabstock[i][j] = -1 ;
+                            }
+                            else{
+                                tabstock[i][j] = -2 ;
+                            }
+                        }
+                        else {
+                            tabstock[i][j] = -2 ;
+                        }
+
+                    }
+                }
                 case_voisine(tabAffichage,tabValeurs,taille,ligne,colonne);
                 affichage(tabAffichage,taille) ;
 
