@@ -5,8 +5,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-static int tabstock[7][7] ;
-static int tabValeurs[7][7];
+static int tabstock[7][7], tabValeurs[7][7];
 static int tabAffichage[7][7], taille = 7, perdu = 0 ;
 int tab[5][5];
 GtkWidget *button_table[5][5];
@@ -110,43 +109,32 @@ void afficher_case(int lig, int col){
 }
 
 void case_voisine2(int lig, int col){
-
+    // case actuelle
     afficher_case(lig-1,col-1);
-
     if (lig-1 >0){
-        //en haut a gauche
         if (col-1>0){
-            afficher_case(lig-2,col-2);
+            afficher_case(lig-2,col-2); // en haut a gauche
         }
-        //en haut
-        afficher_case(lig-2,col-1);
-        //en haut a droite
+        afficher_case(lig-2,col-1); // en haut
         if (col+1 < 5){
-            afficher_case(lig-2,col);
+            afficher_case(lig-2,col); // en haut a droite
         }
     }
-
-    //a gauche
     if (col-1>0){
-        afficher_case(lig-1,col-2);
+        afficher_case(lig-1,col-2); // a gauche
     }
-
     //a droite
     if (col+1 < 5){
-        afficher_case(lig-1,col);
+        afficher_case(lig-1,col); // a droite
     }
-
     if (lig+1<5){
-        //en bas a gauche
         if (col-1>0){
-            afficher_case(lig,col-2);
+            afficher_case(lig,col-2); // en bas a gauche
         }
         //en bas
-        afficher_case(lig,col-1);
-
-        //en bas a droite
+        afficher_case(lig,col-1); // en bas
         if (col+1 < 5){
-            afficher_case(lig,col);
+            afficher_case(lig,col); // en bas a droite
         }
     }
 }
@@ -193,18 +181,21 @@ void case_voisine(int lig, int col){
     }
 }
 
-int nb_case_decouverte(int tabaff[7][7], int taille){
-    int nb_case_dec = 0 ;
-    for (int i1=1 ; i1<taille-1 ; i1++){
-        for (int j1=1 ; j1<taille-1 ; j1++){
-            if (tabaff[i1][j1] != -1){
-                nb_case_dec ++;
-                //printf("%d \n",nb_case_dec);
-            }
-        }
-    }
-    return nb_case_dec ;
-}
+// int nb_case_decouverte(){
+//     int nb_case_dec = 0 ;
+//     int v;
+//     sprintf(v,"%s","   ");
+//     for (int i1=0 ; i1<5 ; i1++){
+//         for (int j1=0 ; j1<5 ; j1++){
+//             sprintf(v,"%s",gtk_button_get_label(GTK_BUTTON(button_table[i1][j1])));
+//             if (v==0|| v==1){
+//                 nb_case_dec ++;
+//                 printf("%d \n",nb_case_dec);
+//             }
+//         }
+//     }
+//     return nb_case_dec ;
+// }
 
 static void a_button_clicked(GtkWidget *widget,gpointer data){
     int x,y;
@@ -214,24 +205,33 @@ static void a_button_clicked(GtkWidget *widget,gpointer data){
     y=GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"y")); // y -> lig
     //Je change mon button (label + profondeur)
     char val[10];
-
+    //Il n'y a pas de mines dans les cases voisines
     if (tabValeurs[y+1][x+1]==0 && perdu ==0){
         case_voisine(y+1,x+1);
+        //nb_case_decouverte();
     }
+    //Il y a une plusieurs mines dans les cases voisines
     else {
+        // Si je perds, le jeu s'arrete
         if (tabValeurs[y+1][x+1]==9 && perdu ==0){
-            printf("PERDU\n");
+            printf("Fin de partie\n");
             perdu = 1 ;
+            for (int i =0;i<5;i++){
+                for (int j=0;j<5;j++){
+                    afficher_case(i,j);
+                }
+            }
         }
+        // Le jeu continue
         else{
             if (perdu==0){
                 sprintf(val,"%c",tabValeurs[y+1][x+1]+48);
                 gtk_button_set_label(GTK_BUTTON (widget),val);
                 gtk_button_set_relief(GTK_BUTTON(widget),GTK_RELIEF_NONE);
+                //nb_case_decouverte();
             }
         }
     }
-    //gtk_widget_modify_fg(button_table[x][y-1], GTK_STATE_NORMAL,&red);
 }
 
 static void activate (GtkApplication *app,gpointer user_data){
@@ -243,17 +243,15 @@ static void activate (GtkApplication *app,gpointer user_data){
 
     /* create a new window, and set its title */
     window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (window), "Window");
-    gtk_container_set_border_width(GTK_CONTAINER (window), 10);
+    gtk_window_set_title (GTK_WINDOW (window), "DEMINEUR");
+    gtk_container_set_border_width(GTK_CONTAINER (window), 40);
 
     // Création de la grille
     grid = gtk_grid_new ();
     gtk_container_add (GTK_CONTAINER (window), grid);
 
-    for (x=0;x<nb_rows;x++)
-    {
-       for (y=0;y<nb_rows;y++)
-       {
+    for (x=0;x<nb_rows;x++){
+       for (y=0;y<nb_rows;y++){
           //construct the button id
           button_table[x][y]= gtk_button_new_with_label("   ");
 
@@ -276,8 +274,8 @@ int main (int    argc, char **argv){
 
     init(taille,tabAffichage,tabValeurs, nb_mines_placee, cpt);
 
-    affichage(tabValeurs, taille);
-
+    //affichage(tabValeurs, taille);
+    printf("Demarrage du demineur\n");
     GtkApplication *app;
     int status;
     app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
