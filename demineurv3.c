@@ -7,7 +7,7 @@
 
 static int tabstock[7][7] ;
 static int tabValeurs[7][7];
-
+static int tabAffichage[7][7], taille = 7, perdu = 0 ;
 //variables globales
 int tab[5][5];
 GtkWidget *button_table[5][5];
@@ -103,57 +103,107 @@ void affichage(int tab[7][7], int taille){
     }
 }
 
-void case_voisine2(int tab[7][7], int tab2[7][7], int taille, int lig, int col){
-    tab[lig-1][col-1] = tab2[lig-1][col-1] ;
-    tab[lig-1][col] = tab2[lig-1][col] ;
-    tab[lig-1][col+1] = tab2[lig-1][col+1] ;
+void case_voisine2(int lig, int col){
+    char val2[10];
+    // position actuelle
+    sprintf(val2,"%c",tabValeurs[lig][col]+48);
+    gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig-1]),val2);
+    gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig-1]),GTK_RELIEF_NONE);
 
-    tab[lig][col-1] = tab2[lig][col-1] ;
-    tab[lig][col+1] = tab2[lig][col+1] ;
+    if (lig-1 >0){
+        //en haut a gauche
+        if (col-1>0){
+            sprintf(val2,"%c",tabValeurs[lig-1][col-1]+48);
+            gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig-2]),val2);
+            gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig-2]),GTK_RELIEF_NONE);
+        }
 
-    tab[lig+1][col-1] = tab2[lig+1][col-1] ;
-    tab[lig+1][col] = tab2[lig+1][col] ;
-    tab[lig+1][col+1] = tab2[lig+1][col+1] ;
+        //en haut
+        sprintf(val2,"%c",tabValeurs[lig-1][col]+48);
+        gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig-2]),val2);
+        gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig-2]),GTK_RELIEF_NONE);
+
+        //en haut a droite
+        if (col+1 < 5){
+            sprintf(val2,"%c",tabValeurs[lig-1][col+1]+48);
+            gtk_button_set_label(GTK_BUTTON (button_table[col][lig-2]),val2);
+            gtk_button_set_relief(GTK_BUTTON(button_table[col][lig-2]),GTK_RELIEF_NONE);
+        }
+    }
+
+    //a gauche
+    if (col-1>0){
+        sprintf(val2,"%c",tabValeurs[lig][col-1]+48);
+        gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig-1]),val2);
+        gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig-1]),GTK_RELIEF_NONE);
+    }
+
+    //a droite
+    if (col+1 < 5){
+        sprintf(val2,"%c",tabValeurs[lig][col+1]+48);
+        gtk_button_set_label(GTK_BUTTON (button_table[col][lig-1]),val2);
+        gtk_button_set_relief(GTK_BUTTON(button_table[col][lig-1]),GTK_RELIEF_NONE);
+    }
+
+    if (lig+1<5){
+        //en bas a gauche
+        if (col-1>0){
+            sprintf(val2,"%c",tabValeurs[lig+1][col-1]+48);
+            gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig]),val2);
+            gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig]),GTK_RELIEF_NONE);
+        }
+        //en bas
+        sprintf(val2,"%c",tabValeurs[lig+1][col]+48);
+        gtk_button_set_label(GTK_BUTTON (button_table[col][lig]),val2);
+        gtk_button_set_relief(GTK_BUTTON(button_table[col][lig]),GTK_RELIEF_NONE);
+
+        //en bas a droite
+        if (col+1 < 5){
+            sprintf(val2,"%c",tabValeurs[lig+1][col+1]+48);
+            gtk_button_set_label(GTK_BUTTON (button_table[col+1][lig]),val2);
+            gtk_button_set_relief(GTK_BUTTON(button_table[col+1][lig]),GTK_RELIEF_NONE);
+        }
+    }
 }
 
-void case_voisine(int tabaff[7][7], int tabval[7][7], int taille, int lig, int col){
+void case_voisine(int lig, int col){
     // J'utilise un troisieme tableau stock pour ne pas me retrouver bloquer et
     // pouvoir faire tout le tour de la zone à découvrir
     // je change la valeur de la position du tableau une fois que je suis allée sur la case
-
     for (int i=1; i<taille-1 ; i++){
         for (int j=1; j<taille-1 ; j++){
-            if (tabaff[lig][col] == 0){ // pas de mines sur les cases voisines
+
                 // Je contrôle que la valeur disponible dans le tableau de Valeur est une case sans mine dans ces voisines
                 // & je contrôle que je ne suis jamais allée sur cette case dans le tableau stock
-                if (tabval[lig-1][col] == 0  && tabstock[lig-1][col] == -1){
-                    tabstock[lig-1][col]=0;
-                    //printf("ligne -1\n");
-                    case_voisine2(tabaff,tabval,taille,lig,col); // Affichage des valeurs voisines
-                    case_voisine(tabaff,tabval,taille,lig-1,col); // Appel recursif de la fonction
-
+            if (tabValeurs[lig-1][col] == 0  && tabstock[lig-1][col] == -1){
+                tabstock[lig-1][col]=0;
+                case_voisine2(lig,col); // Affichage des valeurs voisines
+                if (lig-1 >0){
+                    case_voisine(lig-1,col); // Appel recursif de la fonction
                 }
-                if (tabval[lig][col-1] == 0 && tabstock[lig][col-1] == -1){
-                    tabstock[lig][col-1]=0;
-                    //printf("col -1");
-                    case_voisine2(tabaff,tabval,taille,lig,col); // Affichage des valeurs voisines
-                    case_voisine(tabaff,tabval,taille,lig,col-1); // Appel recursif de la fonction
-
-                }
-                if (tabval[lig+1][col] == 0  && tabstock[lig+1][col] == -1){
-                    tabstock[lig+1][col]=0;
-                    //printf("ligne +1\n");
-                    case_voisine2(tabaff,tabval,taille,lig,col); // Affichage des valeurs voisines
-                    case_voisine(tabaff,tabval,taille,lig+1,col); // Appel recursif de la fonction
-                }
-                if (tabval[lig][col+1] == 0  && tabstock[lig][col+1] == -1){
-                    tabstock[lig][col+1]=0;
-                    //printf("col +1\n");
-                    case_voisine2(tabaff,tabval,taille,lig,col); // Affichage des valeurs voisines
-                    case_voisine(tabaff,tabval,taille,lig,col+1); // Appel recursif de la fonction
-                }
-                case_voisine2(tabaff,tabval,taille,lig,col); // Affichage des valeurs voisines
             }
+            if (tabValeurs[lig][col-1] == 0 && tabstock[lig][col-1] == -1){
+                tabstock[lig][col-1]=0;
+                case_voisine2(lig,col); // Affichage des valeurs voisines
+                if (col-1 >0){
+                    case_voisine(lig,col-1); // Appel recursif de la fonction
+                }
+            }
+            if (tabValeurs[lig+1][col] == 0  && tabstock[lig+1][col] == -1){
+                tabstock[lig+1][col]=0;
+                case_voisine2(lig,col); // Affichage des valeurs voisines
+                if (lig+1 <6){
+                    case_voisine(lig+1,col); // Appel recursif de la fonction
+                }
+            }
+            if (tabValeurs[lig][col+1] == 0  && tabstock[lig][col+1] == -1){
+                tabstock[lig][col+1]=0;
+                case_voisine2(lig,col); // Affichage des valeurs voisines
+                if (col+1<6){
+                    case_voisine(lig,col+1); // Appel recursif de la fonction
+                }
+            }
+            case_voisine2(lig,col); // Affichage des valeurs voisines
         }
     }
 }
@@ -175,21 +225,28 @@ static void a_button_clicked(GtkWidget *widget,gpointer data){
     int x,y;
 
     //Je recupère les données x et y que j'ai caché dans les propriétés x et y de mon objet
-    x=GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"x"));
-    y=GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"y"));
-
+    x=GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"x")); // x -> col
+    y=GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"y")); // y -> lig
     //Je change mon button (label + profondeur)
     char val[10];
-    sprintf(val,"%c",tabValeurs[x+1][y+1]+48);
-    gtk_button_set_label(GTK_BUTTON (widget),val);
-    gtk_button_set_relief(GTK_BUTTON(widget),GTK_RELIEF_NONE);
 
-    //idem pour la case à proximité (avec un changement de couleur pout tester)
-    //gtk_button_set_label(GTK_BUTTON (button_table[x][y-1]),"5");
-    //gtk_button_set_relief(GTK_BUTTON(button_table[x][y-1]),GTK_RELIEF_NONE);
+    if (tabValeurs[y+1][x+1]==0 && perdu ==0){
+        case_voisine(y+1,x+1);
+    }
+    else {
+        if (tabValeurs[y+1][x+1]==9){
+            printf("PERDU\n");
+            perdu = 1 ;
+        }
+        else{
+            if (perdu==0){
+                sprintf(val,"%c",tabValeurs[y+1][x+1]+48);
+                gtk_button_set_label(GTK_BUTTON (widget),val);
+                gtk_button_set_relief(GTK_BUTTON(widget),GTK_RELIEF_NONE);
+            }
+        }
+    }
     //gtk_widget_modify_fg(button_table[x][y-1], GTK_STATE_NORMAL,&red);
-
-
 }
 
 static void activate (GtkApplication *app,gpointer user_data){
@@ -229,9 +286,8 @@ static void activate (GtkApplication *app,gpointer user_data){
 
 int main (int    argc, char **argv){
     //___Initialisation valeurs
-    int taille = 7, nb_mines = 5, continuer = 1, nb_case_dec ;
+    int nb_mines = 5, continuer = 1, nb_case_dec ;
     int ligne = 0, colonne = 0, cpt = 0, nb_mines_placee = 0;
-    int  tabAffichage [taille][taille];
 
     init(taille,tabAffichage,tabValeurs, nb_mines_placee, cpt);
 
@@ -245,7 +301,6 @@ int main (int    argc, char **argv){
     //lancement de la fenetre
     status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);
-
 
     return status;
 }
