@@ -102,65 +102,51 @@ void affichage(int tab[7][7], int taille){
     }
 }
 
+void afficher_case(int lig, int col){
+    char val2[10] = " " ;
+    sprintf(val2,"%c",tabValeurs[lig+1][col+1]+48);
+    gtk_button_set_label(GTK_BUTTON (button_table[col][lig]),val2);
+    gtk_button_set_relief(GTK_BUTTON(button_table[col][lig]),GTK_RELIEF_NONE);
+}
+
 void case_voisine2(int lig, int col){
-    char val2[10];
-    // position actuelle
-    sprintf(val2,"%c",tabValeurs[lig][col]+48);
-    gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig-1]),val2);
-    gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig-1]),GTK_RELIEF_NONE);
+
+    afficher_case(lig-1,col-1);
 
     if (lig-1 >0){
         //en haut a gauche
         if (col-1>0){
-            sprintf(val2,"%c",tabValeurs[lig-1][col-1]+48);
-            gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig-2]),val2);
-            gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig-2]),GTK_RELIEF_NONE);
+            afficher_case(lig-2,col-2);
         }
-
         //en haut
-        sprintf(val2,"%c",tabValeurs[lig-1][col]+48);
-        gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig-2]),val2);
-        gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig-2]),GTK_RELIEF_NONE);
-
+        afficher_case(lig-2,col-1);
         //en haut a droite
         if (col+1 < 5){
-            sprintf(val2,"%c",tabValeurs[lig-1][col+1]+48);
-            gtk_button_set_label(GTK_BUTTON (button_table[col][lig-2]),val2);
-            gtk_button_set_relief(GTK_BUTTON(button_table[col][lig-2]),GTK_RELIEF_NONE);
+            afficher_case(lig-2,col);
         }
     }
 
     //a gauche
     if (col-1>0){
-        sprintf(val2,"%c",tabValeurs[lig][col-1]+48);
-        gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig-1]),val2);
-        gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig-1]),GTK_RELIEF_NONE);
+        afficher_case(lig-1,col-2);
     }
 
     //a droite
     if (col+1 < 5){
-        sprintf(val2,"%c",tabValeurs[lig][col+1]+48);
-        gtk_button_set_label(GTK_BUTTON (button_table[col][lig-1]),val2);
-        gtk_button_set_relief(GTK_BUTTON(button_table[col][lig-1]),GTK_RELIEF_NONE);
+        afficher_case(lig-1,col);
     }
 
     if (lig+1<5){
         //en bas a gauche
         if (col-1>0){
-            sprintf(val2,"%c",tabValeurs[lig+1][col-1]+48);
-            gtk_button_set_label(GTK_BUTTON (button_table[col-2][lig]),val2);
-            gtk_button_set_relief(GTK_BUTTON(button_table[col-2][lig]),GTK_RELIEF_NONE);
+            afficher_case(lig,col-2);
         }
         //en bas
-        sprintf(val2,"%c",tabValeurs[lig+1][col]+48);
-        gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig]),val2);
-        gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig]),GTK_RELIEF_NONE);
+        afficher_case(lig,col-1);
 
         //en bas a droite
         if (col+1 < 5){
-            sprintf(val2,"%c",tabValeurs[lig+1][col+1]+48);
-            gtk_button_set_label(GTK_BUTTON (button_table[col][lig]),val2);
-            gtk_button_set_relief(GTK_BUTTON(button_table[col][lig]),GTK_RELIEF_NONE);
+            afficher_case(lig,col);
         }
     }
 }
