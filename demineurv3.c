@@ -8,7 +8,6 @@
 static int tabstock[7][7] ;
 static int tabValeurs[7][7];
 static int tabAffichage[7][7], taille = 7, perdu = 0 ;
-//variables globales
 int tab[5][5];
 GtkWidget *button_table[5][5];
 
@@ -154,14 +153,14 @@ void case_voisine2(int lig, int col){
         }
         //en bas
         sprintf(val2,"%c",tabValeurs[lig+1][col]+48);
-        gtk_button_set_label(GTK_BUTTON (button_table[col][lig]),val2);
-        gtk_button_set_relief(GTK_BUTTON(button_table[col][lig]),GTK_RELIEF_NONE);
+        gtk_button_set_label(GTK_BUTTON (button_table[col-1][lig]),val2);
+        gtk_button_set_relief(GTK_BUTTON(button_table[col-1][lig]),GTK_RELIEF_NONE);
 
         //en bas a droite
         if (col+1 < 5){
             sprintf(val2,"%c",tabValeurs[lig+1][col+1]+48);
-            gtk_button_set_label(GTK_BUTTON (button_table[col+1][lig]),val2);
-            gtk_button_set_relief(GTK_BUTTON(button_table[col+1][lig]),GTK_RELIEF_NONE);
+            gtk_button_set_label(GTK_BUTTON (button_table[col][lig]),val2);
+            gtk_button_set_relief(GTK_BUTTON(button_table[col][lig]),GTK_RELIEF_NONE);
         }
     }
 }
@@ -234,7 +233,7 @@ static void a_button_clicked(GtkWidget *widget,gpointer data){
         case_voisine(y+1,x+1);
     }
     else {
-        if (tabValeurs[y+1][x+1]==9){
+        if (tabValeurs[y+1][x+1]==9 && perdu ==0){
             printf("PERDU\n");
             perdu = 1 ;
         }
@@ -270,7 +269,7 @@ static void activate (GtkApplication *app,gpointer user_data){
        for (y=0;y<nb_rows;y++)
        {
           //construct the button id
-          button_table[x][y]= gtk_button_new_with_label(" ");
+          button_table[x][y]= gtk_button_new_with_label("   ");
 
           // j'ajoute des données perso x et y pour chaque bouton
           g_object_set_data(G_OBJECT(button_table[x][y]),"x",GINT_TO_POINTER(x));
